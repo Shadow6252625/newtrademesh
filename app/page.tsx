@@ -3,8 +3,11 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
+import { ConnectWalletModal } from "@/components/connect-wallet-modal"
 
 export default function HomePage() {
+  const [walletModalOpen, setWalletModalOpen] = useState(false)
+
   return (
     <div className="relative min-h-screen antialiased selection:bg-cyan-500/30 selection:text-cyan-100 text-white bg-[#0a0a0b]">
       {/* Background */}
@@ -43,7 +46,7 @@ export default function HomePage() {
       </div>
 
       <div className="relative z-10">
-        <Header />
+        <Header walletModalOpen={walletModalOpen} setWalletModalOpen={setWalletModalOpen} />
         <HeroSection />
         <FeaturesSection />
         <LogosSection />
@@ -52,11 +55,16 @@ export default function HomePage() {
         <CTASection />
         <Footer />
       </div>
+
+      <ConnectWalletModal isOpen={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
     </div>
   )
 }
 
-function Header() {
+function Header({
+  walletModalOpen,
+  setWalletModalOpen,
+}: { walletModalOpen: boolean; setWalletModalOpen: (open: boolean) => void }) {
   return (
     <header className="md:px-10 md:pt-16 max-w-7xl mr-auto ml-auto pt-10 pr-6 pl-6">
       <div className="flex items-center justify-between">
@@ -84,7 +92,32 @@ function Header() {
           <a className="text-white/60 hover:text-white transition-colors" href="#">
             Governance
           </a>
-          <button className="glass-border inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm transition-colors hover:bg-white/10">
+          <a
+            className="text-white/60 hover:text-white transition-colors flex items-center justify-center"
+            href="https://x.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Follow on X"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.6l-5.165-6.75-5.97 6.75H2.556l7.73-8.835L1.75 2.25h6.76l4.694 6.207 5.422-6.207zM17.002 18.807h1.844L6.983 4.126H5.015l12.987 14.681z" />
+            </svg>
+          </a>
+          <a
+            className="text-white/60 hover:text-white transition-colors flex items-center justify-center"
+            href="https://t.me/trademesh1_bot"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Join Telegram"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.22-.054-.336-.375-.116l-6.869 4.332-2.965-.924c-.645-.213-.658-.645.136-.953l11.566-4.458c.538-.197 1.006.128.832.941z" />
+            </svg>
+          </a>
+          <button
+            onClick={() => setWalletModalOpen(true)}
+            className="glass-border inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm transition-colors hover:bg-white/10"
+          >
             <WalletIcon />
             <span className="tracking-tight">Connect</span>
           </button>
@@ -140,14 +173,23 @@ function HeroSection() {
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 mt-8">
-          <button className="glass-border group inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-50 text-cyan-950 hover:bg-white px-4 sm:px-5 py-3 text-sm font-medium tracking-tight transition-all hover:-translate-y-0.5">
+          <a
+            href="https://t.me/trademesh1_bot"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="glass-border group inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-50 text-cyan-950 hover:bg-white px-4 sm:px-5 py-3 text-sm font-medium tracking-tight transition-all hover:-translate-y-0.5"
+          >
             <TerminalIcon />
             <span>Launch App</span>
-          </button>
-          <button className="glass-border group inline-flex hover:bg-white/10 transition-all hover:-translate-y-0.5 text-sm text-white tracking-tight rounded-2xl pt-3 pr-4 pb-3 pl-4 gap-2 items-center justify-center">
+          </a>
+          {/* CHANGE: Convert button to link and connect to whitepaper page */}
+          <a
+            href="/whitepaper"
+            className="glass-border group inline-flex hover:bg-white/10 transition-all hover:-translate-y-0.5 text-sm text-white tracking-tight rounded-2xl pt-3 pr-4 pb-3 pl-4 gap-2 items-center justify-center"
+          >
             <FileTextIcon />
             <span>Read Whitepaper</span>
-          </button>
+          </a>
         </div>
 
         {/* Divider */}
@@ -1438,7 +1480,7 @@ function WandIcon(props: React.SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <path d="m21.64 3.64l-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72M14 7l3 3M5 6v4m14 4v4M10 2v2M7 8H3m18 8h-4M11 3H9" />
+      <path d="M21.64 3.64l-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72M14 7l3 3M5 6v4m14 4v4M10 2v2M7 8H3m18 8h-4M11 3H9" />
     </svg>
   )
 }
