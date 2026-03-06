@@ -184,6 +184,14 @@
     @apply border-white/20 bg-white/[0.05];
   }
 
+  .premium-card {
+    @apply border border-white/[0.08] bg-[#050608]/90 backdrop-blur-3xl transition-all duration-500 rounded-[2rem] shadow-[0_15px_40px_-10px_rgba(0, 0, 0, 0.8)];
+  }
+
+  .premium-card:hover {
+    @apply border-white/[0.15] shadow-[0_20px_50px_-10px_rgba(0, 175, 255, 0.15)];
+  }
+
   .premium-gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-b from-white via-white/90 to-white/60;
   }

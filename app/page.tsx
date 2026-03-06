@@ -265,31 +265,32 @@ function HeroSection() {
 
 function FeaturesSection() {
   return (
-    <section className="md:px-10 md:pt-28 max-w-6xl mr-auto ml-auto pt-20 pr-6 pl-6">
-      {/* Badge */}
-      <div className="flex justify-center">
-        <div className="glass-border inline-flex items-center gap-2 rounded-full px-3 py-1.5">
-          <GlobeIcon className="text-cyan-300" />
-          <span className="text-sm text-cyan-200/90">Global Connective Fabric</span>
-        </div>
+    <section className="relative md:px-10 md:pt-36 max-w-6xl mr-auto ml-auto pt-24 pr-6 pl-6">
+      {/* Advanced Premium Background Glows */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[40%] w-[1200px] h-[1000px] pointer-events-none -z-10 flex items-center justify-center mix-blend-screen opacity-90 overflow-hidden">
+        <div className="w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-500/10 via-cyan-500/5 to-transparent blur-[100px] rounded-full" />
+        <div className="absolute w-[180%] h-[120px] bg-gradient-to-r from-transparent via-cyan-300/20 to-transparent -rotate-[35deg] blur-2xl top-1/2" />
+        <div className="absolute w-[180%] h-[200px] bg-gradient-to-r from-transparent via-blue-500/15 to-transparent -rotate-[35deg] blur-[60px] top-[55%]" />
       </div>
 
-      {/* Heading */}
-      <h1 className="mt-6 text-center text-4xl md:text-6xl font-semibold tracking-tight premium-gradient-text">
-        A Frictionless Global
-        <span className="block">Trading Matrix</span>
-      </h1>
-      <p className="mx-auto mt-5 max-w-2xl text-center text-base md:text-lg text-white/50 font-normal leading-relaxed">
-        A network of networks where every transaction, algorithm, and market pulse is woven together through a
-        transparent digital mesh.
-      </p>
+      <div className="relative z-10 flex flex-col items-center">
+        {/* Heading */}
+        <h2 className="text-center text-5xl md:text-[4.5rem] font-bold tracking-tight text-white mb-6 leading-[1.05] drop-shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+          A Frictionless Global
+          <br className="hidden md:block" /> Trading Matrix
+        </h2>
+        <p className="mx-auto max-w-2xl text-center text-base md:text-[1.15rem] text-white/50 font-medium leading-[1.6] mb-16 px-4">
+          A network of networks where every transaction, algorithm, and market pulse is
+          <br className="hidden md:block" /> woven together through a transparent digital mesh.
+        </p>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 md:gap-8 mt-12 gap-6">
-        <LiquidityCard />
-        <CrossChainCard />
-        <CollaborativeCard />
-        <AutomationCard />
+        {/* Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8 gap-6 w-full">
+          <LiquidityCard />
+          <CrossChainCard />
+          <CollaborativeCard />
+          <AutomationCard />
+        </div>
       </div>
     </section>
   )
@@ -299,7 +300,7 @@ function LiquidityCard() {
   const [usProgress, setUsProgress] = useState(0)
   const [bdProgress, setBdProgress] = useState(0)
   const [hasAnimated, setHasAnimated] = useState(false)
-  const cardRef = useRef<HTMLElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -342,19 +343,19 @@ function LiquidityCard() {
   }
 
   return (
-    <SpotlightCard className="glass-border group overflow-hidden rounded-3xl pt-5 pr-5 pb-5 pl-5 relative">
+    <SpotlightCard className="premium-card group relative p-6 md:p-8">
       <div ref={cardRef} className="absolute inset-0 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
-      <div className="-right-24 -top-24 bg-cyan-500/10 w-72 h-72 rounded-full absolute blur-3xl" />
+      <div className="-right-24 -top-24 bg-cyan-500/10 w-72 h-72 rounded-full absolute blur-[80px]" />
 
-      <div className="glass-border rounded-2xl pt-4 pr-4 pb-4 pl-4">
+      <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 relative z-10 shadow-inner">
         <div className="flex items-center gap-2 text-white/80 text-sm mb-3">
           <BarChartIcon className="h-4 w-4 text-cyan-300" />
           <span className="font-medium">Aggregated Liquidity Depth</span>
         </div>
 
         <div className="space-y-3">
-          <div className="glass-border rounded-xl p-3">
+          <div className="bg-black/40 border border-white/[0.04] rounded-xl p-4 transition-colors hover:bg-black/60">
             <div className="flex items-center gap-3">
               <div className="h-6 w-6 rounded-full bg-slate-800 flex items-center justify-center ring-1 ring-white/20">
                 <GemIcon className="text-[10px]" />
@@ -376,7 +377,7 @@ function LiquidityCard() {
             <p className="mt-2 text-[11px] text-white/50">WETH / USDC</p>
           </div>
 
-          <div className="glass-border rounded-xl p-3">
+          <div className="bg-black/40 border border-white/[0.04] rounded-xl p-4 transition-colors hover:bg-black/60">
             <div className="flex items-center gap-3">
               <div className="h-6 w-6 rounded-full bg-slate-800 flex items-center justify-center ring-1 ring-white/20">
                 <ZapIcon className="text-[10px]" />
@@ -399,8 +400,8 @@ function LiquidityCard() {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          <button className="glass-border inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-cyan-200 hover:bg-cyan-500/20 transition">
+        <div className="mt-5 flex items-center justify-between">
+          <button className="bg-white/[0.03] border border-white/[0.05] hover:border-cyan-500/30 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs text-cyan-200 hover:bg-cyan-500/10 transition-all">
             <ScanEyeIcon className="h-4 w-4" />
             AI Insights
           </button>
@@ -411,8 +412,8 @@ function LiquidityCard() {
         </div>
       </div>
 
-      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight premium-gradient-text">Unified Liquidity</h3>
-      <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
+      <h3 className="mt-8 text-xl md:text-[1.35rem] font-semibold tracking-tight text-white">Unified Liquidity</h3>
+      <p className="mt-2 text-[0.95rem] text-white/50 leading-[1.6]">
         Access deep liquidity pools across chains. The Mesh intelligently routes orders to the deepest sources
         instantly.
       </p>
@@ -448,11 +449,11 @@ function CrossChainCard() {
   }, [])
 
   return (
-    <SpotlightCard className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
+    <SpotlightCard className="premium-card group relative p-6 md:p-8">
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-indigo-500/10 blur-3xl" />
+      <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-indigo-500/10 blur-[80px]" />
 
-      <div className="glass-border rounded-2xl p-4">
+      <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 relative z-10 shadow-inner">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-white/80 text-sm">
             <ArrowLeftRightIcon className="h-4 w-4 text-indigo-300" />
@@ -464,8 +465,11 @@ function CrossChainCard() {
           </div>
         </div>
 
-        <div className="overflow-hidden h-36 glass-border rounded-xl mt-3">
-          <ul ref={listRef} className="relative">
+        <div className="overflow-hidden h-[150px] bg-black/40 border border-white/[0.04] rounded-xl mt-4 relative">
+          {/* Gradient masking for scroll effect */}
+          <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-[#0e0f12] to-transparent z-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-[#0e0f12] to-transparent z-10" />
+          <ul ref={listRef} className="relative py-2">
             <li className="flex pt-2 pr-3 pb-2 pl-3 items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="h-6 w-6 rounded-full bg-indigo-500/20 grid place-items-center text-[10px] ring-1 ring-indigo-500/40">
@@ -506,8 +510,8 @@ function CrossChainCard() {
         </div>
       </div>
 
-      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight premium-gradient-text">Automate Movement</h3>
-      <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
+      <h3 className="mt-8 text-xl md:text-[1.35rem] font-semibold tracking-tight text-white">Automate Movement</h3>
+      <p className="mt-2 text-[0.95rem] text-white/50 leading-[1.6]">
         Seamlessly move assets between ecosystems. The Mesh handles bridging, swapping, and gas abstraction invisibly.
       </p>
     </SpotlightCard>
@@ -516,30 +520,30 @@ function CrossChainCard() {
 
 function CollaborativeCard() {
   return (
-    <SpotlightCard className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
+    <SpotlightCard className="premium-card group relative p-6 md:p-8">
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute -right-24 -bottom-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl" />
+      <div className="absolute -right-24 -bottom-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-[80px]" />
 
-      <div className="glass-border rounded-2xl p-4">
+      <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 relative z-10 shadow-inner">
         <div className="flex items-center gap-2 text-white/80 text-sm">
           <BlocksIcon className="h-4 w-4 text-emerald-300" />
           <span className="font-medium">Protocol Interoperability</span>
         </div>
 
-        <div className="mt-3 grid grid-cols-4 gap-3">
-          <div className="glass-border flex flex-col items-center gap-2 rounded-xl p-3">
+        <div className="mt-4 grid grid-cols-4 gap-3">
+          <div className="bg-black/40 border border-white/[0.04] hover:bg-black/60 transition-colors flex flex-col items-center gap-2 rounded-xl p-3">
             <ArrowRightLeftIcon className="h-5 w-5 text-white/80" />
             <span className="text-xs text-white/70">DEXs</span>
           </div>
-          <div className="glass-border flex flex-col items-center gap-2 rounded-xl p-3">
+          <div className="bg-black/40 border border-white/[0.04] hover:bg-black/60 transition-colors flex flex-col items-center gap-2 rounded-xl p-3">
             <LandmarkIcon className="h-5 w-5 text-white/80" />
             <span className="text-xs text-white/70">Lending</span>
           </div>
-          <div className="glass-border flex flex-col items-center gap-2 rounded-xl p-3">
+          <div className="bg-black/40 border border-white/[0.04] hover:bg-black/60 transition-colors flex flex-col items-center gap-2 rounded-xl p-3">
             <BotIcon className="h-5 w-5 text-white/80" />
             <span className="text-xs text-white/70">Agents</span>
           </div>
-          <div className="glass-border flex flex-col items-center gap-2 rounded-xl p-3">
+          <div className="bg-black/40 border border-white/[0.04] hover:bg-black/60 transition-colors flex flex-col items-center gap-2 rounded-xl p-3">
             <WebhookIcon className="h-5 w-5 text-white/80" />
             <span className="text-xs text-white/70">Oracles</span>
           </div>
@@ -570,8 +574,8 @@ function CollaborativeCard() {
         </div>
       </div>
 
-      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight premium-gradient-text">Collaborative Fabric</h3>
-      <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
+      <h3 className="mt-8 text-xl md:text-[1.35rem] font-semibold tracking-tight text-white">Collaborative Fabric</h3>
+      <p className="mt-2 text-[0.95rem] text-white/50 leading-[1.6]">
         Exchanges, traders, and automated agents collaborate seamlessly. A unified protocol for the machine economy.
       </p>
     </SpotlightCard>
@@ -580,22 +584,22 @@ function CollaborativeCard() {
 
 function AutomationCard() {
   return (
-    <SpotlightCard className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
+    <SpotlightCard className="premium-card group relative p-6 md:p-8">
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl" />
+      <div className="absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-amber-500/10 blur-[80px]" />
 
-      <div className="glass-border rounded-2xl p-4 relative overflow-hidden">
+      <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 relative z-10 shadow-inner">
         <div className="flex items-center justify-between text-white/80 text-sm">
           <div className="flex items-center gap-2">
             <WandIcon className="h-4 w-4 text-amber-300" />
             <span className="font-medium">Smart Router</span>
           </div>
           <div className="flex items-center gap-2">
-            <button className="glass-border inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] text-white/80 hover:bg-white/10 transition">
+            <button className="bg-white/[0.03] border border-white/[0.05] inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] text-white/80 hover:bg-white/10 transition">
               <PlusIcon className="h-3.5 w-3.5" />
               Strategy
             </button>
-            <button className="glass-border inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] text-emerald-200 hover:bg-emerald-500/20 transition">
+            <button className="bg-emerald-500/10 border border-emerald-500/20 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] text-emerald-200 hover:bg-emerald-500/20 transition">
               <PlayIcon className="h-3.5 w-3.5" />
               Execute
             </button>
@@ -603,30 +607,30 @@ function AutomationCard() {
         </div>
 
         <div className="mt-4 grid grid-cols-3 gap-3">
-          <div className="glass-border relative rounded-xl p-3">
+          <div className="bg-black/40 border border-white/[0.04] relative rounded-xl p-3 hover:bg-black/60 transition-colors">
             <div className="flex items-center gap-2 text-xs text-white/80">
               <FlagIcon className="h-4 w-4 text-amber-300" />
               Signal
             </div>
-            <p className="mt-2 text-xs text-white/70">Arb Opportunity</p>
+            <p className="mt-2 text-[11px] text-white/70">Arb Opportunity</p>
           </div>
-          <div className="glass-border relative rounded-xl p-3">
+          <div className="bg-black/40 border border-white/[0.04] relative rounded-xl p-3 hover:bg-black/60 transition-colors">
             <div className="flex items-center gap-2 text-xs text-white/80">
               <GitBranchIcon className="h-4 w-4 text-white/70" />
               Route
             </div>
-            <p className="mt-2 text-xs text-white/70">Multi-hop Mesh</p>
+            <p className="mt-2 text-[11px] text-white/70">Multi-hop Mesh</p>
           </div>
-          <div className="glass-border relative rounded-xl p-3">
+          <div className="bg-black/40 border border-white/[0.04] relative rounded-xl p-3 hover:bg-black/60 transition-colors">
             <div className="flex items-center gap-2 text-xs text-white/80">
               <WalletIcon className="h-4 w-4 text-emerald-300" />
               Settle
             </div>
-            <p className="mt-2 text-xs text-white/70">Flash Loan</p>
+            <p className="mt-2 text-[11px] text-white/70">Flash Loan</p>
           </div>
         </div>
 
-        <pre className="mt-4 text-[11px] leading-relaxed glass-border rounded-xl p-3 text-white/80 overflow-x-auto">
+        <pre className="mt-4 text-[11px] leading-relaxed bg-[#0a0a0b]/80 border border-white/[0.05] shadow-inner rounded-xl p-4 text-white/70 overflow-x-auto">
           {`async function executeRoute(asset) {
   const path = await mesh.findOptimal(asset);
   if (path.slippage < 0.05) {
@@ -636,8 +640,8 @@ function AutomationCard() {
         </pre>
       </div>
 
-      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight premium-gradient-text">Adaptive Intelligence</h3>
-      <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
+      <h3 className="mt-8 text-xl md:text-[1.35rem] font-semibold tracking-tight text-white">Adaptive Intelligence</h3>
+      <p className="mt-2 text-[0.95rem] text-white/50 leading-[1.6]">
         Programmable logic that adapts to market volatility. Configure bots to execute trades only when mesh conditions
         are perfect.
       </p>
@@ -647,7 +651,7 @@ function AutomationCard() {
 
 function LogosSection() {
   return (
-    <section className="max-w-7xl mt-40 mr-auto ml-auto pt-16 pr-4 pb-6 pl-4 relative sm:px-6 lg:px-8 lg:mt-40">
+    <section className="max-w-7xl mt-8 mr-auto ml-auto pt-8 pr-4 pb-6 pl-4 relative sm:px-6 lg:px-8 lg:mt-12">
       <div className="text-center">
         <p className="uppercase text-sm font-medium text-slate-400 tracking-wide">
           Interlinked with major protocols & exchanges
