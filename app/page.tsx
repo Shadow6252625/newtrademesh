@@ -1,9 +1,33 @@
 "use client"
 
+import Link from "next/link"
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
+import { cn } from "@/lib/utils"
 import { ConnectWalletModal } from "@/components/connect-wallet-modal"
+import { LiquidButton } from "@/components/ui/liquid-glass-button"
+
+function SpotlightCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return
+    const { left, top } = containerRef.current.getBoundingClientRect()
+    containerRef.current.style.setProperty("--mouse-x", `${e.clientX - left}px`)
+    containerRef.current.style.setProperty("--mouse-y", `${e.clientY - top}px`)
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className={cn("spotlight-card", className)}
+    >
+      {children}
+    </div>
+  )
+}
 
 export default function HomePage() {
   const [walletModalOpen, setWalletModalOpen] = useState(false)
@@ -51,6 +75,11 @@ export default function HomePage() {
         <FeaturesSection />
         <LogosSection />
         <PricingSection />
+        <TokenomicsSection />
+        <EcosystemSection />
+        <DeveloperSection />
+        <GovernanceSection />
+        <SecuritySection />
         <FAQSection />
         <CTASection />
         <Footer />
@@ -114,13 +143,12 @@ function Header({
               <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.22-.054-.336-.375-.116l-6.869 4.332-2.965-.924c-.645-.213-.658-.645.136-.953l11.566-4.458c.538-.197 1.006.128.832.941z" />
             </svg>
           </a>
-          <button
-            onClick={() => setWalletModalOpen(true)}
-            className="glass-border inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm transition-colors hover:bg-white/10"
+          <Link
+            href="/dashboard"
+            className="rounded-2xl animate-float ml-4 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 px-6 py-2.5 flex items-center justify-center transition-all"
           >
-            <WalletIcon />
-            <span className="tracking-tight">Connect</span>
-          </button>
+            <span className="tracking-tight font-bold text-lg text-white">Open Mesh</span>
+          </Link>
         </div>
       </div>
     </header>
@@ -173,15 +201,13 @@ function HeroSection() {
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 mt-8">
-          <a
-            href="https://t.me/trademesh1_bot"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/dashboard"
             className="glass-border group inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-50 text-cyan-950 hover:bg-white px-4 sm:px-5 py-3 text-sm font-medium tracking-tight transition-all hover:-translate-y-0.5"
           >
             <TerminalIcon />
             <span>Launch App</span>
-          </a>
+          </Link>
           {/* CHANGE: Convert button to link and connect to whitepaper page */}
           <a
             href="/whitepaper"
@@ -212,132 +238,30 @@ function HeroSection() {
         </div>
       </div>
 
-      {/* Right: Interactive grid + floating glass cards */}
-      <div className="lg:col-span-7">
-        <TestimonialStack />
+      {/* Right: Spinning Orb Video */}
+      <div className="lg:col-span-7 relative flex items-center justify-center">
+        <div className="glass-border overflow-hidden rounded-3xl relative w-full aspect-square md:aspect-[4/3]">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            src="/spinning-orb.mp4"
+            className="w-full h-full object-cover opacity-90 mix-blend-screen scale-105"
+          />
+          {/* Vignette & Inner Glow */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0a0b]/60 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.6)] pointer-events-none" />
+        </div>
+
+        {/* Subtle Outer Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-cyan-700/10 rounded-full blur-[100px] pointer-events-none -z-10" />
       </div>
     </section>
   )
 }
 
-function TestimonialStack() {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const timerRef = useRef<NodeJS.Timeout>()
 
-  const cards = [
-    {
-      icon: <ArrowLeftRightIcon />,
-      quote: "Automated arbitrage paths across Layer 2s are settling instantly.",
-      name: "Mesh Agent 0x8A",
-      role: "Arbitrage Bot",
-      avatar: <BotIcon className="text-cyan-300" />,
-    },
-    {
-      icon: <DropletsIcon />,
-      quote: "Liquidity fragmentation solved. One pool, accessible from any chain.",
-      name: "Marcus Lin",
-      role: "Market Maker",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=320",
-    },
-    {
-      icon: <ShieldCheckIcon />,
-      quote: "Smart order routing optimized execution price by 4.2% automatically.",
-      name: "Apex Fund",
-      role: "Institutional Desk",
-      avatar: <BuildingIcon className="text-indigo-300" />,
-    },
-    {
-      icon: <NetworkIcon />,
-      quote: "The API provides real-time pulse on global volume flows.",
-      name: "Liam Foster",
-      role: "Quant Developer",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=320",
-    },
-  ]
-
-  useEffect(() => {
-    const startTimer = () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-      timerRef.current = setInterval(() => {
-        setActiveIndex((prev) => (prev + 1) % cards.length)
-      }, 3000)
-    }
-    startTimer()
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-    }
-  }, [cards.length])
-
-  const getCardClass = (index: number) => {
-    const pos = (index - activeIndex + cards.length) % cards.length
-    if (pos === 0) return "active"
-    if (pos === 1) return "next-1"
-    if (pos === 2) return "next-2"
-    return "hidden-card"
-  }
-
-  return (
-    <div className="glass-border overflow-hidden aspect-[16/12] rounded-3xl pt-4 pr-4 pb-4 pl-4 relative">
-      {/* Stacked testimonial cards */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="relative w-full max-w-[280px] sm:max-w-[300px] h-[320px]">
-          {cards.map((card, index) => (
-            <div
-              key={index}
-              className={`testimonial-card pointer-events-auto ${getCardClass(index)}`}
-              onClick={() => setActiveIndex(index)}
-            >
-              <div className="glass-border transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.02] rounded-2xl shadow-2xl">
-                <div className="pt-4 pr-4 pb-4 pl-4">
-                  <div className="inline-flex w-9 h-9 rounded-xl items-center justify-center glass-effect">
-                    {card.icon}
-                  </div>
-                  <p className="leading-relaxed text-xs text-white/70 mt-3">"{card.quote}"</p>
-                  <div className="mt-4 flex items-center gap-2 pt-3 border-t border-white/10">
-                    {typeof card.avatar === "string" ? (
-                      <img
-                        className="h-8 w-8 rounded-xl ring-2 ring-white/10 object-cover"
-                        src={card.avatar || "/placeholder.svg"}
-                        alt={card.name}
-                      />
-                    ) : (
-                      <div className="h-8 w-8 rounded-xl ring-2 ring-white/10 bg-cyan-900/50 grid place-items-center">
-                        {card.avatar}
-                      </div>
-                    )}
-                    <div>
-                      <div className="text-[11px] font-medium text-white tracking-tight">{card.name}</div>
-                      <div className="text-[11px] text-white/60">{card.role}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Navigation dots */}
-      <div className="pointer-events-auto absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        {cards.map((_, index) => (
-          <div
-            key={index}
-            onClick={() => setActiveIndex(index)}
-            className={`rounded-full transition-all duration-300 cursor-pointer ${
-              index === activeIndex ? "w-6 h-2 bg-white" : "w-2 h-2 bg-white/30"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Vignette */}
-      <div
-        className="pointer-events-none absolute inset-0 rounded-3xl"
-        style={{ background: "radial-gradient(600px 280px at 60% 40%, rgba(255,255,255,0.07), transparent 60%)" }}
-      />
-    </div>
-  )
-}
 
 function FeaturesSection() {
   return (
@@ -351,11 +275,11 @@ function FeaturesSection() {
       </div>
 
       {/* Heading */}
-      <h1 className="mt-6 text-center text-4xl md:text-6xl font-semibold tracking-tight text-white">
+      <h1 className="mt-6 text-center text-4xl md:text-6xl font-semibold tracking-tight premium-gradient-text">
         A Frictionless Global
         <span className="block">Trading Matrix</span>
       </h1>
-      <p className="mx-auto mt-5 max-w-2xl text-center text-base md:text-lg text-white/70 font-normal">
+      <p className="mx-auto mt-5 max-w-2xl text-center text-base md:text-lg text-white/50 font-normal leading-relaxed">
         A network of networks where every transaction, algorithm, and market pulse is woven together through a
         transparent digital mesh.
       </p>
@@ -418,7 +342,8 @@ function LiquidityCard() {
   }
 
   return (
-    <section ref={cardRef} className="glass-border group overflow-hidden rounded-3xl pt-5 pr-5 pb-5 pl-5 relative">
+    <SpotlightCard className="glass-border group overflow-hidden rounded-3xl pt-5 pr-5 pb-5 pl-5 relative">
+      <div ref={cardRef} className="absolute inset-0 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
       <div className="-right-24 -top-24 bg-cyan-500/10 w-72 h-72 rounded-full absolute blur-3xl" />
 
@@ -486,12 +411,12 @@ function LiquidityCard() {
         </div>
       </div>
 
-      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight">Unified Liquidity</h3>
-      <p className="mt-1.5 text-sm text-white/70">
+      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight premium-gradient-text">Unified Liquidity</h3>
+      <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
         Access deep liquidity pools across chains. The Mesh intelligently routes orders to the deepest sources
         instantly.
       </p>
-    </section>
+    </SpotlightCard>
   )
 }
 
@@ -523,7 +448,7 @@ function CrossChainCard() {
   }, [])
 
   return (
-    <section className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
+    <SpotlightCard className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent pointer-events-none" />
       <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-indigo-500/10 blur-3xl" />
 
@@ -581,17 +506,17 @@ function CrossChainCard() {
         </div>
       </div>
 
-      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight">Automate Movement</h3>
-      <p className="mt-1.5 text-sm text-white/70">
+      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight premium-gradient-text">Automate Movement</h3>
+      <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
         Seamlessly move assets between ecosystems. The Mesh handles bridging, swapping, and gas abstraction invisibly.
       </p>
-    </section>
+    </SpotlightCard>
   )
 }
 
 function CollaborativeCard() {
   return (
-    <section className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
+    <SpotlightCard className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent pointer-events-none" />
       <div className="absolute -right-24 -bottom-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl" />
 
@@ -645,17 +570,17 @@ function CollaborativeCard() {
         </div>
       </div>
 
-      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight">Collaborative Fabric</h3>
-      <p className="mt-1.5 text-sm text-white/70">
+      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight premium-gradient-text">Collaborative Fabric</h3>
+      <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
         Exchanges, traders, and automated agents collaborate seamlessly. A unified protocol for the machine economy.
       </p>
-    </section>
+    </SpotlightCard>
   )
 }
 
 function AutomationCard() {
   return (
-    <section className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
+    <SpotlightCard className="glass-border group relative overflow-hidden rounded-3xl p-5 md:p-6">
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent pointer-events-none" />
       <div className="absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl" />
 
@@ -711,12 +636,12 @@ function AutomationCard() {
         </pre>
       </div>
 
-      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight">Adaptive Intelligence</h3>
-      <p className="mt-1.5 text-sm text-white/70">
+      <h3 className="mt-5 text-xl md:text-2xl font-semibold tracking-tight premium-gradient-text">Adaptive Intelligence</h3>
+      <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
         Programmable logic that adapts to market volatility. Configure bots to execute trades only when mesh conditions
         are perfect.
       </p>
-    </section>
+    </SpotlightCard>
   )
 }
 
@@ -810,9 +735,12 @@ function PricingSection() {
               Basic analytics
             </li>
           </ul>
-          <button className="glass-border mt-6 w-full rounded-xl bg-white text-zinc-900 hover:bg-zinc-100 px-4 py-2.5 text-sm font-medium transition">
+          <Link
+            href="/dashboard"
+            className="glass-border mt-6 inline-flex w-full items-center justify-center rounded-xl bg-white text-zinc-900 hover:bg-zinc-100 px-4 py-2.5 text-sm font-medium transition"
+          >
             Connect Wallet
-          </button>
+          </Link>
         </div>
 
         <div className="glass-border relative rounded-3xl p-6">
@@ -839,9 +767,12 @@ function PricingSection() {
               WebSocket API
             </li>
           </ul>
-          <button className="glass-border mt-6 w-full rounded-xl bg-white text-zinc-900 hover:bg-zinc-100 px-4 py-2.5 text-sm font-medium transition">
+          <Link
+            href="/dashboard"
+            className="glass-border mt-6 inline-flex w-full items-center justify-center rounded-xl bg-white text-zinc-900 hover:bg-zinc-100 px-4 py-2.5 text-sm font-medium transition"
+          >
             Run Node
-          </button>
+          </Link>
         </div>
 
         <div className="glass-border rounded-3xl p-6">
@@ -867,6 +798,354 @@ function PricingSection() {
           <button className="glass-border mt-6 w-full rounded-xl px-4 py-2.5 text-sm font-medium transition hover:bg-white/15">
             Contact Team
           </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function TokenomicsSection() {
+  return (
+    <section className="max-w-6xl mx-auto md:px-10 px-6 pt-24 md:pt-32">
+      <div className="flex justify-center">
+        <div className="glass-border inline-flex items-center gap-2 rounded-full px-3 py-1.5">
+          <PieChartIcon className="text-indigo-300 w-4 h-4" />
+          <span className="text-sm text-indigo-200/90">$MESH Tokenomics</span>
+        </div>
+      </div>
+      <div className="text-center mt-6">
+        <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">Fueling the Intelligence</h2>
+        <p className="mt-3 text-white/60 max-w-2xl mx-auto">
+          The $MESH token powers the protocol, aligning incentives between traders, node operators, and liquidity providers.
+        </p>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+        {/* Chart representation */}
+        <div className="lg:col-span-5 glass-border rounded-3xl p-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[300px]">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent pointer-events-none" />
+
+          {/* CSS Donut Chart */}
+          <div className="relative w-48 h-48 rounded-full flex items-center justify-center glow-effect"
+            style={{
+              background: "conic-gradient(rgba(34,211,238,0.8) 0% 40%, rgba(168,85,247,0.8) 40% 65%, rgba(52,211,153,0.8) 65% 85%, rgba(251,191,36,0.8) 85% 100%)",
+              boxShadow: "0 0 40px rgba(99, 102, 241, 0.2)"
+            }}>
+            <div className="absolute w-32 h-32 bg-[#0a0a0b] rounded-full flex flex-col items-center justify-center z-10 glass-border">
+              <span className="text-2xl font-semibold text-white">1B</span>
+              <span className="text-[10px] text-white/50 uppercase tracking-widest mt-1">Total Supply</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Breakdown */}
+        <div className="lg:col-span-7 glass-border rounded-3xl p-6 md:p-8">
+          <h3 className="text-xl font-medium mb-6">Distribution Breakdown</h3>
+          <div className="space-y-4">
+
+            {/* Item 1 */}
+            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+                <div>
+                  <div className="text-sm font-medium text-white/90">Community & Rewards</div>
+                  <div className="text-[11px] text-white/50">Liquidity mining, airdrops, and staking yields</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-semibold text-white">40%</div>
+                <div className="text-[11px] text-white/50">400M $MESH</div>
+              </div>
+            </div>
+
+            {/* Item 2 */}
+            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]" />
+                <div>
+                  <div className="text-sm font-medium text-white/90">Core Contributors</div>
+                  <div className="text-[11px] text-white/50">3-year linear vesting with 1-year cliff</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-semibold text-white">25%</div>
+                <div className="text-[11px] text-white/50">250M $MESH</div>
+              </div>
+            </div>
+
+            {/* Item 3 */}
+            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                <div>
+                  <div className="text-sm font-medium text-white/90">Treasury & Ecosystem</div>
+                  <div className="text-[11px] text-white/50">Grants, partnerships, and protocol development</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-semibold text-white">20%</div>
+                <div className="text-[11px] text-white/50">200M $MESH</div>
+              </div>
+            </div>
+
+            {/* Item 4 */}
+            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
+                <div>
+                  <div className="text-sm font-medium text-white/90">Investors</div>
+                  <div className="text-[11px] text-white/50">2-year linear vesting with 6-month cliff</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-semibold text-white">15%</div>
+                <div className="text-[11px] text-white/50">150M $MESH</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function EcosystemSection() {
+  return (
+    <section className="max-w-6xl mx-auto md:px-10 px-6 pt-24 md:pt-32">
+      <div className="flex justify-center">
+        <div className="glass-border inline-flex items-center gap-2 rounded-full px-3 py-1.5">
+          <GlobeIcon className="text-emerald-300 w-4 h-4" />
+          <span className="text-sm text-emerald-200/90">Growing Ecosystem</span>
+        </div>
+      </div>
+      <div className="text-center mt-6">
+        <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">Built on the Mesh</h2>
+        <p className="mt-3 text-white/60 max-w-2xl mx-auto">
+          A sprawling network of dApps, wallets, and protocols leveraging our unified liquidity layer for frictionless execution.
+        </p>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Category 1 */}
+        <div className="glass-border rounded-3xl p-6 group hover:bg-white/[0.02] transition-colors relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 ring-1 ring-emerald-500/20 overflow-hidden">
+            <img src="/ecosystem-icons/wallets.png" alt="Wallets" className="w-full h-full object-cover scale-125" />
+          </div>
+          <h3 className="text-lg font-medium text-white/90">Wallets & Interfaces</h3>
+          <p className="mt-2 text-sm text-white/60 leading-relaxed">
+            Native integrations across top-tier non-custodial wallets allow users to swap assets with zero cognitive overhead, powered invisibly by TradeMesh routing.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs">
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">Phantom</span>
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">MetaMask</span>
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">Rabby</span>
+          </div>
+        </div>
+
+        {/* Category 2 */}
+        <div className="glass-border rounded-3xl p-6 group hover:bg-white/[0.02] transition-colors relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6 ring-1 ring-cyan-500/20 overflow-hidden">
+            <img src="/ecosystem-icons/dex.png" alt="DEX" className="w-full h-full object-cover scale-125" />
+          </div>
+          <h3 className="text-lg font-medium text-white/90">DEX Aggregators</h3>
+          <p className="mt-2 text-sm text-white/60 leading-relaxed">
+            Protocols tap into our multi-chain liquidity API to offer their users the best execution prices without managing complex cross-chain infrastructure.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs">
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">1inch API</span>
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">Jupiter</span>
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">ParaSwap</span>
+          </div>
+        </div>
+
+        {/* Category 3 */}
+        <div className="glass-border rounded-3xl p-6 group hover:bg-white/[0.02] transition-colors relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
+          <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 ring-1 ring-amber-500/20 overflow-hidden">
+            <img src="/ecosystem-icons/agents.png" alt="Agents" className="w-full h-full object-cover scale-125" />
+          </div>
+          <h3 className="text-lg font-medium text-white/90">Automated Agents</h3>
+          <p className="mt-2 text-sm text-white/60 leading-relaxed">
+            Quant funds and independent MEV searchers deploy custom logic bots directly to our relay nodes, capturing arbitrage opportunities instantaneously.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs">
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">MakerDAO</span>
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">Aave Flash</span>
+            <span className="glass-border px-2.5 py-1 rounded-full text-white/70">Custom Bots</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function DeveloperSection() {
+  return (
+    <section className="max-w-6xl mx-auto md:px-10 px-6 pt-24 md:pt-32">
+      <div className="flex justify-center">
+        <div className="glass-border inline-flex items-center gap-2 rounded-full px-3 py-1.5">
+          <TerminalIcon className="text-cyan-300 w-4 h-4" />
+          <span className="text-sm text-cyan-200/90">Developer SDK</span>
+        </div>
+      </div>
+      <div className="text-center mt-6">
+        <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">Programmable Liquidity</h2>
+        <p className="mt-3 text-white/60 max-w-2xl mx-auto">
+          Integrate the TradeMesh routing engine into your application with three lines of code. Complete access to cross-chain state.
+        </p>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <div className="space-y-6">
+          <div className="flex gap-4">
+            <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
+              <ZapIcon className="text-cyan-400 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-medium text-white/90">Instant Settlement</h3>
+              <p className="mt-1 text-sm text-white/60">Atomic swaps across L2s settle in under 500ms using optimistic verification.</p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
+              <ShieldCheckIcon className="text-cyan-400 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-medium text-white/90">Pre-check Execution</h3>
+              <p className="mt-1 text-sm text-white/60">Simulate routes entirely off-chain to guarantee zero reverted transactions.</p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
+              <CodeIcon className="text-cyan-400 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-medium text-white/90">Typed Interfaces</h3>
+              <p className="mt-1 text-sm text-white/60">Fully typed SDK for TypeScript, Rust, and Python seamlessly kept in sync.</p>
+            </div>
+          </div>
+          <button className="glass-border inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition hover:bg-white/10 mt-4 text-cyan-50">
+            Read Documentation
+            <ArrowRightIcon className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="glass-border rounded-3xl p-2 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
+          <div className="bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/10">
+            <div className="flex items-center px-4 py-3 bg-[#2d2d2d] border-b border-white/5 gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500/80" />
+              <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+              <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+              <span className="ml-4 text-[11px] text-white/50 font-mono">swap.ts</span>
+            </div>
+            <div className="p-4 overflow-x-auto text-sm font-mono text-white/80 leading-relaxed">
+              <pre>
+                <span className="text-purple-400">import</span> {`{ TradeMesh }`} <span className="text-purple-400">from</span> <span className="text-emerald-300">'@trademesh/sdk'</span>;
+                <br /><br />
+                <span className="text-blue-400">const</span> mesh = <span className="text-purple-400">new</span> <span className="text-amber-300">TradeMesh</span>(process.env.API_KEY);
+                <br /><br />
+                <span className="text-white/40">// Route 1M USDC to ETH optimally</span><br />
+                <span className="text-blue-400">const</span> route = <span className="text-purple-400">await</span> mesh.<span className="text-blue-300">getBestRoute</span>({`{`}<br />
+                {`  `}tokenIn: <span className="text-emerald-300">'USDC'</span>,<br />
+                {`  `}tokenOut: <span className="text-emerald-300">'WETH'</span>,<br />
+                {`  `}amountIn: <span className="text-emerald-300">'1000000'</span>,<br />
+                {`  `}slippage: <span className="text-amber-400">0.5</span><br />
+                {`}`});
+                <br /><br />
+                <span className="text-purple-400">await</span> mesh.<span className="text-blue-300">execute</span>(route, wallet);
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function GovernanceSection() {
+  return (
+    <section className="max-w-6xl mx-auto md:px-10 px-6 pt-24 md:pt-32">
+      <div className="glass-border rounded-3xl p-8 md:p-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
+
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 bg-purple-500/10 text-purple-300 text-sm font-medium mb-4 ring-1 ring-purple-500/20">
+              <UsersIcon className="w-4 h-4" />
+              Decentralized Governance
+            </div>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">Shaping the Future of Liquidity</h2>
+            <p className="text-white/70 leading-relaxed mb-8">
+              Protocol parameters, fee structures, and the addition of new chains are determined by the community. $MESH holders dictate the roadmap through transparent on-chain voting.
+            </p>
+            <div className="flex gap-4">
+              <button className="glass-border rounded-xl bg-white text-zinc-900 hover:bg-zinc-100 px-5 py-2.5 text-sm font-medium transition">
+                View Proposals
+              </button>
+              <button className="border border-white/10 hover:bg-white/5 rounded-xl text-white px-5 py-2.5 text-sm font-medium transition flex items-center gap-2">
+                Join Discord
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="glass-border p-6 rounded-2xl flex flex-col items-center justify-center text-center">
+              <span className="text-3xl font-bold text-white mb-1">12.4k</span>
+              <span className="text-xs text-white/50 uppercase tracking-wider">Active Voters</span>
+            </div>
+            <div className="glass-border p-6 rounded-2xl flex flex-col items-center justify-center text-center">
+              <span className="text-3xl font-bold text-white mb-1">84</span>
+              <span className="text-xs text-white/50 uppercase tracking-wider">Proposals Passed</span>
+            </div>
+            <div className="glass-border p-6 rounded-2xl flex flex-col items-center justify-center text-center col-span-2">
+              <span className="text-3xl font-bold text-white mb-1">78.2%</span>
+              <span className="text-xs text-white/50 uppercase tracking-wider">Circulating Supply Staked</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function SecuritySection() {
+  return (
+    <section className="max-w-6xl mx-auto md:px-10 px-6 pt-24 md:pt-32 pb-10">
+      <div className="text-center">
+        <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">Institutional Grade Security</h2>
+        <p className="mt-3 text-white/60 max-w-2xl mx-auto mb-10">
+          The Mesh protocol is fortified through rigorous formal verification, multiple independent audits, and a proactive bug bounty program.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-border rounded-3xl p-6 flex flex-col items-center text-center">
+          <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20 overflow-hidden">
+            <img src="/security-icons/audit.png" alt="Audits" className="w-full h-full object-cover scale-150" />
+          </div>
+          <h3 className="text-lg font-medium text-white/90">Triple Audited</h3>
+          <p className="mt-2 text-sm text-white/60">Smart contracts audited by Trail of Bits, OpenZeppelin, and CertiK.</p>
+        </div>
+
+        <div className="glass-border rounded-3xl p-6 flex flex-col items-center text-center">
+          <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center mb-4 border border-amber-500/20 overflow-hidden">
+            <img src="/security-icons/bounty.png" alt="Bug Bounty" className="w-full h-full object-cover scale-150" />
+          </div>
+          <h3 className="text-lg font-medium text-white/90">$1M Bug Bounty</h3>
+          <p className="mt-2 text-sm text-white/60">Active bug bounty program hosted on Immunefi to reward whitehat researchers.</p>
+        </div>
+
+        <div className="glass-border rounded-3xl p-6 flex flex-col items-center text-center">
+          <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-4 border border-blue-500/20 overflow-hidden">
+            <img src="/security-icons/monitoring.png" alt="Monitoring" className="w-full h-full object-cover scale-150" />
+          </div>
+          <h3 className="text-lg font-medium text-white/90">Real-time Monitoring</h3>
+          <p className="mt-2 text-sm text-white/60">24/7 on-chain threat detection and automated circuit breakers.</p>
         </div>
       </div>
     </section>
@@ -930,21 +1209,14 @@ function CTASection() {
         <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">Enter the Matrix</h2>
         <p className="mt-3 text-white/70">Join the decentralized mesh reshaping global commerce.</p>
 
-        <form className="mt-6 flex flex-col sm:flex-row gap-3" aria-label="Join the waitlist">
-          <label htmlFor="email" className="sr-only">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            placeholder="trader@fund.com"
-            className="glass-border w-full rounded-xl placeholder-white/40 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-white/30 bg-transparent text-white"
-          />
-          <button className="glass-border rounded-xl bg-white text-zinc-900 hover:bg-zinc-100 px-5 py-3 text-sm font-medium transition">
-            Request Access
-          </button>
-        </form>
+        <div className="mt-8">
+          <Link
+            href="/dashboard"
+            className="glass-border rounded-xl bg-white text-zinc-900 hover:bg-zinc-100 px-8 py-3 text-sm font-bold transition inline-flex items-center justify-center"
+          >
+            Enter the Matrix
+          </Link>
+        </div>
 
         <p className="mt-3 text-xs text-white/50">Early access for liquidity providers.</p>
       </div>
@@ -956,21 +1228,121 @@ function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="max-w-6xl mx-auto md:px-10 px-6 pb-12">
-      <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-xs text-white/50">© {currentYear} TradeMesh Inc.</p>
-        <nav className="flex items-center gap-4 text-xs text-white/60">
-          <a href="#" className="hover:text-white">
-            Protocol
-          </a>
-          <a href="#" className="hover:text-white">
-            Governance
-          </a>
-          <a href="#" className="hover:text-white">
-            Audits
-          </a>
-        </nav>
+    <footer className="relative mt-20 pt-20 pb-10 overflow-hidden border-t border-white/5 bg-[#0a0a0b]/80 backdrop-blur-3xl">
+      {/* Glow Effects */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl -ml-48 -mt-48 pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl -mr-48 -mb-48 pointer-events-none" />
+
+      {/* Footer Video Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-20 mix-blend-screen scale-110"
+        >
+          <source src="/footer-video.mp4" type="video/mp4" />
+        </video>
+        {/* Soft Fade Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0b] via-transparent to-[#0a0a0b]/80" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
+
+          {/* Brand & Newsletter Column (Spans 4) */}
+          <div className="lg:col-span-4 space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="w-[40px] h-[40px] rounded-xl bg-cover bg-center ring-2 ring-white/10"
+                style={{
+                  backgroundImage: "url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/7362aa43-57c7-45b4-af5d-cf6500c0ed58_320w.png')"
+                }}
+              />
+              <span className="font-semibold tracking-tight text-xl text-white">TradeMesh</span>
+            </div>
+
+            <p className="text-sm text-white/60 leading-relaxed max-w-sm">
+              The connective fabric for global liquidity. Unifying exchanges, agents, and markets across the decentralized web.
+            </p>
+
+            <form className="relative max-w-sm flex items-center" onSubmit={(e) => e.preventDefault()}>
+              <MailIcon className="absolute left-4 w-4 h-4 text-white/40" />
+              <input
+                type="email"
+                placeholder="Join the newsletter"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-10 pr-24 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-shadow"
+              />
+              <button className="absolute right-1 text-xs font-medium bg-white text-black px-4 py-2 rounded-xl hover:bg-zinc-200 transition-colors">
+                Subscribe
+              </button>
+            </form>
+          </div>
+
+          {/* Links Grid (Spans 8) */}
+          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+            {/* Protocol */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-white/90">Protocol</h4>
+              <ul className="space-y-3 text-white/60">
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Markets Layer</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Liquidity Pools</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Mesh Nodes</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Governance</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">$MESH Token</a></li>
+              </ul>
+            </div>
+
+            {/* Developers */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-white/90">Developers</h4>
+              <ul className="space-y-3 text-white/60">
+                <li><a href="#" className="hover:text-purple-400 transition-colors">Documentation</a></li>
+                <li><a href="#" className="hover:text-purple-400 transition-colors">API Reference</a></li>
+                <li><a href="#" className="hover:text-purple-400 transition-colors">Smart Contracts</a></li>
+                <li><a href="#" className="hover:text-purple-400 transition-colors">Bug Bounty</a></li>
+                <li><a href="#" className="hover:text-purple-400 transition-colors">Audits</a></li>
+              </ul>
+            </div>
+
+            {/* Ecosystem */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-white/90">Company</h4>
+              <ul className="space-y-3 text-white/60">
+                <li><a href="#" className="hover:text-amber-400 transition-colors">About Us</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition-colors">Careers<span className="ml-2 text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-full">Hiring</span></a></li>
+                <li><a href="#" className="hover:text-amber-400 transition-colors">Press Kit</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition-colors">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Separator */}
+        <div className="mt-16 mb-8 h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+        {/* Bottom Bar: Copyright & Socials */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-[13px] text-white/40">
+            © {currentYear} TradeMesh Inc. All rights reserved.
+          </p>
+
+          <div className="flex items-center gap-4">
+            <a href="#" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-all hover:scale-105" aria-label="Twitter">
+              <TwitterIcon className="w-4 h-4" />
+            </a>
+            <a href="#" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-all hover:scale-105" aria-label="Discord">
+              <DiscordIcon className="w-4 h-4" />
+            </a>
+            <a href="#" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-all hover:scale-105" aria-label="Telegram">
+              <TelegramIcon className="w-4 h-4" />
+            </a>
+            <a href="#" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-all hover:scale-105" aria-label="GitHub">
+              <GithubIcon className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   )
@@ -1579,6 +1951,114 @@ function ChevronDownIcon(props: React.SVGProps<SVGSVGElement>) {
       {...props}
     >
       <path d="m6 9l6 6l6-6" />
+    </svg>
+  )
+}
+
+function PieChartIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+      <path d="M22 12A10 10 0 0 0 12 2v10z" />
+    </svg>
+  )
+}
+
+function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  )
+}
+
+function UsersIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  )
+}
+
+function LockIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  )
+}
+
+function BugIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="m8 2 1.88 1.88" />
+      <path d="M14.12 3.88 16 2" />
+      <path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1" />
+      <path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6" />
+      <path d="M12 20v-9" />
+      <path d="M6.53 9C4.6 8.8 3 7.1 3 5" />
+      <path d="M17.47 9c1.93-.2 3.53-1.9 3.53-4" />
+      <path d="M8 14H4" />
+      <path d="M20 14h-4" />
+      <path d="M6 19c2 1 3 3 3 5" />
+      <path d="M18 19c-2 1-3 3-3 5" />
+    </svg>
+  )
+}
+
+function EyeIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+
+function TwitterIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+    </svg>
+  )
+}
+
+function DiscordIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M9 12h.01M15 12h.01M7.5 4.5l-1.5 1.5M16.5 4.5l1.5 1.5M21 12c0 4.4-3.6 8-8 8s-8-3.6-8-8 3.5-8 8-8 8 3.6 8 8C4.5 9 5.5 16 5.5 16c0 0 2.5 4 6.5 4s6.5-4 6.5-4c0 0 1-7-2.5-11.5" />
+    </svg>
+  )
+}
+
+function TelegramIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="m22 2-7 20-4-9-9-4Z" />
+      <path d="M22 2 11 13" />
+    </svg>
+  )
+}
+
+function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+      <path d="M9 18c-4.51 2-5-2-7-2" />
+    </svg>
+  )
+}
+
+function MailIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect width="20" height="16" x="2" y="4" rx="2" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
   )
 }
